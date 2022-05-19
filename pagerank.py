@@ -1,15 +1,8 @@
+from operator import attrgetter
 from data_processing import load_graph_dataset
 import networkx as nx
 import numpy as np
-
-# constants for HKPR
-
-e = 10**(-7) # margin of error
-a = 0
-b = 1
-t = 5        # poisson distribution parameter
-# L = 5        # number of iterations
-alpha = 0.85 # google's pagerank parameter
+from propagation_types import get_gnn_propagation, get_pagerank_propagation
 
 
 def page_rank_using_basic_propagation(graph,n,L):
@@ -17,11 +10,9 @@ def page_rank_using_basic_propagation(graph,n,L):
     m = graph.number_of_edges()
     print(n,m)
 
-    X = np.array([1.0/n for i in range(n)])  # doubtful whether all are 1/n or only the seed node's value is 1/n
-    
-    W = np.array([alpha*(pow(1.0-alpha,i)) for i in range(n+1)]) # n+1 because we access Y[i+1] later edge condition
+    pagerank_parameters = get_pagerank_propagation(n,L)
 
-    Y = W.cumsum()
+    e,a,b,X,W,Y,alpha = attrgetter('e','a','b','X','W','Y','alpha')(pagerank_parameters)
 
     r = np.array(X)   # initially r = x 
     r_ = np.zeros(r.shape) # extra temporary vector to store next level's r vector
@@ -47,14 +38,12 @@ def page_rank_using_basic_propagation(graph,n,L):
 
 
 
-def gnn_node_classification_using_random_propagation(graph):
-    print('...starting PageRank using randomized graph propagation...')
+def gnn_node_classification_using_random_propagation(graph,n,L):
+    print('...starting GNN using randomized graph propagation...')
 
-    X = np.array([1.0/n for i in range(n)])  # doubtful whether all are 1/n or only the seed node's value is 1/n
-    
-    W = np.array([alpha*(pow(1.0-alpha,i)) for i in range(n+1)]) # n+1 because we access Y[i+1] later edge condition
+    gnn_parameters = get_gnn_propagation(n,L)
+    e,a,b,X,W,Y,alpha = attrgetter('e','a','b','X','W','Y','alpha')(gnn_parameters)
 
-    Y = W.cumsum()
 
     r = np.array(X)   # initially r = x 
     r_ = np.zeros(r.shape) # extra temporary vector to store next level's r vector

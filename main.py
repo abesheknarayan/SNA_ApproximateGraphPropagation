@@ -6,8 +6,15 @@ import matplotlib.pyplot as plt
 
 import numpy as np
 
-def main():
-    graph,n = load_graph_dataset()
+def run_pagerank_for_single_iteration(graph,n):
+    st_time = time.time()
+    pi = page_rank_using_basic_propagation(graph,n,1)
+    en_time = time.time()
+    print(en_time-st_time)
+
+
+
+def run_pagerank_for_various_iterations(graph,n):
     pagerank_metric_x = []
     pagerank_metrix_y = []
     for i in [1,2,3,4]:
@@ -22,7 +29,10 @@ def main():
     plt.ylabel("Time (in seconds)")
     plt.savefig('output/pagerank_metric.png')
 
-    # print(len(np.unique(pi)))
+def main():
+    graph,n = load_graph_dataset()
+    run_pagerank_for_single_iteration(graph,n) 
+    run_pagerank_for_various_iterations(graph,n)   
 
     print("...doing secure pagerank...")
 
